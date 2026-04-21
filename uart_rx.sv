@@ -43,7 +43,6 @@ always @(posedge clk) begin
     sync_1 <= uart_done;
     sync_2 <= sync_1;
 
-    // one-cycle pulse
     rx_ready <= sync_1 & ~sync_2;
 
     if (sync_1 & ~sync_2) begin
@@ -64,14 +63,14 @@ always @(posedge uart_clk) begin
 
         IDLE: begin
             uart_done <= 0;
-            if (rx == 0) begin // start bit detected
+            if (rx == 0) begin
                 bit_index <= 0;
                 state <= RX_DATA;
             end
         end
 
         RX_DATA: begin
-            data_reg[bit_index] <= rx; // LSB first
+            data_reg[bit_index] <= rx;
             if (bit_index == DATA_BITS-1) begin
                 state <= STOP;
             end else begin
